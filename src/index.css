@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-accent: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-serif-brand: "Cormorant Garamond", Georgia, serif;
+
+  --color-midnight: #101A35;
+  --color-cobalt: #1C3265;
+  --color-royal: #3156A5;
+  --color-soft-cobalt: #6385CB;
+  --color-ice-blue: #B7C9ED;
+  --color-arctic: #F1F4FC;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-sans);
+    color: #101A35;
+    background-color: #FFFFFF;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-accent {
+    font-family: var(--font-accent);
+  }
+
+  .font-serif-brand {
+    font-family: var(--font-serif-brand);
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid #3156A5;
+    outline-offset: 2px;
+  }
+}
+
+/* Hide scrollbars cleanly for horizontal category rail */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Apple UI Circular / Capsule Buttons with Cursor-Tracking Specular Spotlight */
+.apple-btn {
+  position: relative;
+  overflow: hidden;
+  border-radius: 9999px;
+  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
+  transition:
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
+  will-change: transform;
+}
+
+.apple-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    110px circle at var(--mx, 50%) var(--my, 50%),
+    var(--spotlight, rgba(183, 201, 237, 0.38)),
+    transparent 70%
+  );
+  transition: opacity 200ms ease;
+}
+
+.apple-btn:hover::before {
+  opacity: 1;
+}
+
+.apple-btn:active {
+  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0) scale(0.96);
+}
+
+.apple-btn-primary {
+  --spotlight: rgba(183, 201, 237, 0.36);
+  background: linear-gradient(180deg, #254182 0%, #162854 58%, #101A35 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 0 rgba(10, 18, 40, 0.35),
+    0 8px 20px -6px rgba(16, 26, 53, 0.42);
+}
+
+.apple-btn-primary:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    0 12px 24px -6px rgba(28, 50, 101, 0.48);
+}
+
+.apple-btn-glass {
+  --spotlight: rgba(49, 86, 165, 0.16);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  color: #101A35;
+  border: 1px solid rgba(183, 201, 237, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 4px 14px -4px rgba(28, 50, 101, 0.12);
+}
+
+.apple-btn-glass:hover {
+  background: rgba(241, 244, 252, 0.95);
+  border-color: #3156A5;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 8px 20px -5px rgba(49, 86, 165, 0.22);
+}
+
+.apple-icon-btn {
+  --spotlight: rgba(49, 86, 165, 0.2);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(183, 201, 237, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    0 4px 14px -3px rgba(16, 26, 53, 0.14);
+}
+
+.apple-icon-btn:hover {
+  border-color: #3156A5;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 8px 18px -4px rgba(49, 86, 165, 0.26);
+}
+
+/* Subtle abstract geometric dot-grid and architectural diagonal texture */
+.trt-grid-surface {
+  background-image:
+    radial-gradient(rgba(99, 133, 203, 0.14) 1px, transparent 1px),
+    linear-gradient(135deg, rgba(183, 201, 237, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px, 120px 120px;
+  background-position: 0 0, 0 0;
+}
+
+.trt-diagonal-lines {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(28, 50, 101, 0.025) 0px,
+    rgba(28, 50, 101, 0.025) 1px,
+    transparent 1px,
+    transparent 44px
+  );
+}
+
+.trt-paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
