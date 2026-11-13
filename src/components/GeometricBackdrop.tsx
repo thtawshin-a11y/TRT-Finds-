@@ -28,9 +28,10 @@ export function GeometricBackdrop() {
   });
 
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
     const finePointer = window.matchMedia('(pointer: fine)');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (!finePointer.matches || reducedMotion.matches) return;
+    if (!finePointer?.matches || reducedMotion?.matches) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       const w = window.innerWidth || 1;

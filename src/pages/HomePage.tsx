@@ -129,12 +129,18 @@ export function HomePage() {
                     </p>
                   </div>
                   <div className="h-20 w-24 shrink-0 overflow-hidden rounded-2xl border border-[#B7C9ED]/60 bg-white">
-                    <img
-                      src={spotlightProduct.images[0]}
-                      alt={spotlightProduct.title}
-                      referrerPolicy="no-referrer"
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
+                    {spotlightProduct.images?.[0] ? (
+                      <img
+                        src={spotlightProduct.images[0]}
+                        alt={spotlightProduct.title}
+                        referrerPolicy="no-referrer"
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-[#F1F4FC]">
+                        <div className="h-6 w-6 rotate-45 rounded-lg border border-[#6385CB]/45 bg-white" />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="mt-3 flex items-center justify-between text-xs font-semibold text-[#1C3265]">

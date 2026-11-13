@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { DEFAULT_SITE_SETTINGS, fetchStorefrontData } from '../lib/apiClient';
+import { getStaticStorefrontData } from '../lib/fallbackCatalog';
 import type { Category, Product, SiteSettings, WishlistItem } from '../types';
 
 const WISHLIST_STORAGE_KEY = 'trt_finds_wishlist_v1';
@@ -27,8 +28,17 @@ function readLocalWishlist(): WishlistItem[] {
   try {
     const raw = localStorage.getItem(WISHLIST_STORAGE_KEY);
     if (!raw) return [];
-    const parsed = JSON.parse(raw) as WishlistItem[];
-    return Array.isArray(parsed) ? parsed : [];
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (item): item is WishlistItem =>
+        Boolean(item) &&
+        typeof item === 'object' &&
+        typeof (item as WishlistItem).productId === 'string' &&
+        typeof (item as WishlistItem).title === 'string' &&
+        typeof (item as WishlistItem).slug === 'string' &&
+        typeof (item as WishlistItem).price === 'number'
+    );
   } catch {
     return [];
   }
@@ -56,11 +66,23 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const refreshStorefront = useCallback(async () => {
     try {
       const data = await fetchStorefrontData();
-      setProducts(data.products);
-      setCategories(data.categories);
-      setSettings({ ...DEFAULT_SITE_SETTINGS, ...data.settings });
+      const safeProducts = Array.isArray(data?.products)
+        ? data.products
+        : getStaticStorefrontData().products;
+      const safeCategories = Array.isArray(data?.categories)
+        ? data.categories
+        : getStaticStorefrontData().categories;
+      setProducts(safeProducts);
+      setCategories(safeCategories);
+      setSettings({
+        ...DEFAULT_SITE_SETTINGS,
+        ...(data?.settings && typeof data.settings === 'object' ? data.settings : {}),
+      });
     } catch {
-      // Keep current state if transient network issue occurs
+      const fallback = getStaticStorefrontData();
+      setProducts((prev) => (prev.length > 0 ? prev : fallback.products));
+      setCategories((prev) => (prev.length > 0 ? prev : fallback.categories));
+      setSettings((prev) => ({ ...DEFAULT_SITE_SETTINGS, ...prev }));
     } finally {
       setLoadingCatalog(false);
     }

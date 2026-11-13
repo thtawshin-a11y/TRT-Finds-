@@ -18,20 +18,21 @@ export function CustomCursor() {
   const rafId = useRef<number | null>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
     const finePointer = window.matchMedia('(pointer: fine)');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     const evaluate = () => {
-      setEnabled(finePointer.matches && !reducedMotion.matches);
+      setEnabled(Boolean(finePointer?.matches) && !reducedMotion?.matches);
     };
 
     evaluate();
-    finePointer.addEventListener('change', evaluate);
-    reducedMotion.addEventListener('change', evaluate);
+    finePointer.addEventListener?.('change', evaluate);
+    reducedMotion.addEventListener?.('change', evaluate);
 
     return () => {
-      finePointer.removeEventListener('change', evaluate);
-      reducedMotion.removeEventListener('change', evaluate);
+      finePointer.removeEventListener?.('change', evaluate);
+      reducedMotion.removeEventListener?.('change', evaluate);
     };
   }, []);
 

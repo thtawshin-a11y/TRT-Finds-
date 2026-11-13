@@ -10,7 +10,10 @@ export function LogoPreloader({ enabled = true }: { enabled?: boolean }) {
       setVisible(false);
       return;
     }
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const duration = reduced ? 120 : 900;
     const timer = window.setTimeout(() => setVisible(false), duration);
     return () => window.clearTimeout(timer);
