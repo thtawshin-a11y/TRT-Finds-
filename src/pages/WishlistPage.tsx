@@ -1,36 +1,47 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Trash2 } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Trash2, User } from 'lucide-react';
 import { ScrollReveal, ScrollScrubCard } from '../components/ScrollEffects';
+import { useProfile } from '../context/ProfileContext';
 import { useStore } from '../context/StoreContext';
 import { trackAnalyticsEvent } from '../lib/apiClient';
 import { formatTaka, isSafeHttpUrl } from '../lib/format';
 
 export function WishlistPage() {
   const { wishlist, removeWishlistItem, settings } = useStore();
+  const { activeProfile } = useProfile();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
       <ScrollReveal className="flex flex-col justify-between gap-4 pb-6 sm:flex-row sm:items-end">
         <div>
           <p className="font-accent text-xs font-semibold tracking-[0.16em] text-[#3156A5] uppercase">
-            Saved Collection
+            {activeProfile.name} · {activeProfile.profileCode}
           </p>
           <h1 className="mt-1.5 font-display text-3xl font-extrabold tracking-tight text-[#101A35]">
             Your Wishlist
           </h1>
-          <p className="mt-1 text-sm text-[#1C3265]/75">
-            Saved locally on your device—no account or sign-up required ({wishlist.length}{' '}
+          <p className="mt-1 text-sm text-[#1C3265]/80">
+            Saved directly to your customer profile—no sign-in or account needed ({wishlist.length}{' '}
             {wishlist.length === 1 ? 'saved find' : 'saved finds'}).
           </p>
         </div>
 
-        <Link
-          to="/shop"
-          className="apple-btn apple-btn-glass inline-flex h-10 items-center gap-1.5 px-5 text-xs font-semibold"
-        >
-          <span className="relative z-10">Continue shopping</span>
-          <ArrowRight className="relative z-10 h-3.5 w-3.5" />
-        </Link>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Link
+            to="/profile"
+            className="apple-btn apple-btn-glass inline-flex h-10 items-center gap-1.5 px-4 text-xs font-semibold"
+          >
+            <User className="relative z-10 h-3.5 w-3.5" />
+            <span className="relative z-10">Switch Profile</span>
+          </Link>
+          <Link
+            to="/shop"
+            className="apple-btn apple-btn-primary inline-flex h-10 items-center gap-1.5 px-5 text-xs font-semibold"
+          >
+            <span className="relative z-10">Continue shopping</span>
+            <ArrowRight className="relative z-10 h-3.5 w-3.5" />
+          </Link>
+        </div>
       </ScrollReveal>
 
       {wishlist.length === 0 ? (

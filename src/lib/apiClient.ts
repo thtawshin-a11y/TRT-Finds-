@@ -232,6 +232,7 @@ export async function fetchAdminDashboard(token: string): Promise<{
   products: Product[];
   categories: Category[];
   analytics: AnalyticsEvent[];
+  profileCount?: number;
   settings: SiteSettings;
 }> {
   if (token.startsWith('trt_static_') || staticHostDetected) {

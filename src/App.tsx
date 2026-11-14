@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, MotionConfig } from 'motion/react';
-import { AuthModal } from './components/AuthModal';
 import { CustomCursor } from './components/CustomCursor';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Footer } from './components/Footer';
@@ -11,7 +10,7 @@ import { LogoPreloader } from './components/LogoPreloader';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { QuickViewModal } from './components/QuickViewModal';
 import { ScrollProgressBar } from './components/ScrollEffects';
-import { AuthProvider } from './context/AuthContext';
+import { ProfileProvider } from './context/ProfileContext';
 import { StoreProvider, useStore } from './context/StoreContext';
 import { trackAnalyticsEvent } from './lib/apiClient';
 import { AboutPage } from './pages/AboutPage';
@@ -20,6 +19,7 @@ import { CategoriesPage } from './pages/CategoriesPage';
 import { ContactPage } from './pages/ContactPage';
 import { HomePage } from './pages/HomePage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
+import { ProfilePage } from './pages/ProfilePage';
 import { ShopPage } from './pages/ShopPage';
 import { WishlistPage } from './pages/WishlistPage';
 
@@ -107,6 +107,7 @@ function AppShell() {
                   <Route path="/contact" element={<ContactPage />} />
                   <Route path="/product/:slug" element={<ProductDetailPage />} />
                   <Route path="/wishlist" element={<WishlistPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </motion.div>
@@ -118,7 +119,6 @@ function AppShell() {
       )}
 
       <QuickViewModal />
-      <AuthModal />
       <ToastBanner />
     </>
   );
@@ -129,11 +129,11 @@ export default function App() {
     <ErrorBoundary>
       <MotionConfig reducedMotion="user">
         <BrowserRouter>
-          <AuthProvider>
+          <ProfileProvider>
             <StoreProvider>
               <AppShell />
             </StoreProvider>
-          </AuthProvider>
+          </ProfileProvider>
         </BrowserRouter>
       </MotionConfig>
     </ErrorBoundary>

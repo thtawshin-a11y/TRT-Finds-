@@ -7,20 +7,19 @@ import {
   Info,
   LayoutGrid,
   Lock,
-  LogOut,
   Mail,
   Menu,
   ShoppingBag,
   Sparkles,
-  UserPlus,
+  User,
   X,
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useProfile } from '../context/ProfileContext';
 import { useStore } from '../context/StoreContext';
 
 export function MobileBottomNav() {
-  const { wishlist, settings, showToast } = useStore();
-  const { user, openAuthModal, signOutUser } = useAuth();
+  const { wishlist, settings } = useStore();
+  const { activeProfile, isActiveProfileLocked } = useProfile();
   const location = useLocation();
   const [moreOpen, setMoreOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -52,7 +51,10 @@ export function MobileBottomNav() {
   ];
 
   const isMoreRouteActive =
-    moreOpen || location.pathname === '/about' || location.pathname === '/contact';
+    moreOpen ||
+    location.pathname === '/profile' ||
+    location.pathname === '/about' ||
+    location.pathname === '/contact';
 
   return (
     <div
@@ -89,41 +91,52 @@ export function MobileBottomNav() {
               </button>
             </div>
 
-            {/* Member Sign Up / Continue with Google Row */}
-            <div className="mb-2.5 rounded-2xl border border-[#B7C9ED]/70 bg-[#F1F4FC]/70 p-2.5">
-              {user ? (
-                <div className="flex items-center justify-between gap-2">
+            {/* Customer Profile Card (Zero Login) */}
+            <div className="mb-2.5 rounded-2xl border border-[#B7C9ED]/70 bg-[#F1F4FC]/75 p-3">
+              <div className="flex items-center justify-between gap-2.5">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  {activeProfile.avatarUrl ? (
+                    <img
+                      src={activeProfile.avatarUrl}
+                      alt={activeProfile.name}
+                      className="h-9 w-9 shrink-0 rounded-xl border border-white object-cover shadow-xs"
+                    />
+                  ) : (
+                    <span
+                      style={{ backgroundColor: activeProfile.avatarAccent || '#1C3265' }}
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-display text-xs font-bold text-white"
+                    >
+                      {(activeProfile.name || 'T').slice(0, 1).toUpperCase()}
+                    </span>
+                  )}
                   <div className="min-w-0">
-                    <p className="truncate font-display text-xs font-bold text-[#101A35]">
-                      {user.displayName || 'TRT FINDS Member'}
+                    <p className="flex items-center gap-1 truncate font-display text-xs font-bold text-[#101A35]">
+                      <span className="truncate">{activeProfile.name}</span>
+                      {activeProfile.hasPin && (
+                        <Lock
+                          className={`h-3 w-3 shrink-0 ${
+                            isActiveProfileLocked ? 'text-[#101A35]' : 'text-[#3156A5]'
+                          }`}
+                        />
+                      )}
                     </p>
-                    <p className="truncate text-[10px] font-medium text-[#1C3265]">{user.email}</p>
+                    <p className="truncate font-accent text-[10px] font-semibold text-[#3156A5]">
+                      {activeProfile.profileCode} ·{' '}
+                      {isActiveProfileLocked ? 'PIN Locked' : `${wishlist.length} saved`}
+                    </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMoreOpen(false);
-                      void signOutUser().then(() => showToast('Signed out.'));
-                    }}
-                    className="apple-btn apple-btn-glass inline-flex h-8 items-center gap-1.5 px-3 text-[11px] font-semibold text-[#101A35]"
-                  >
-                    <LogOut className="relative z-10 h-3.5 w-3.5" />
-                    <span className="relative z-10">Sign Out</span>
-                  </button>
                 </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMoreOpen(false);
-                    openAuthModal('signup');
-                  }}
-                  className="apple-btn apple-btn-primary flex h-10 w-full items-center justify-center gap-2 px-4 text-xs font-semibold"
+                <Link
+                  to="/profile"
+                  onClick={() => setMoreOpen(false)}
+                  className="apple-btn apple-btn-primary inline-flex h-8 shrink-0 items-center gap-1.5 px-3 text-[11px] font-semibold"
                 >
-                  <UserPlus className="relative z-10 h-4 w-4" />
-                  <span className="relative z-10">Sign Up / Continue with Google</span>
-                </button>
-              )}
+                  <User className="relative z-10 h-3.5 w-3.5" />
+                  <span className="relative z-10">
+                    {isActiveProfileLocked ? 'Unlock' : 'Profile'}
+                  </span>
+                </Link>
+              </div>
             </div>
 
             <div className="relative grid grid-cols-2 gap-2">

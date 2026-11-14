@@ -7,21 +7,20 @@ import {
   Heart,
   Layers,
   Lock,
-  LogOut,
   MoreVertical,
   Search,
   Sparkles,
-  UserPlus,
+  User,
   X,
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useProfile } from '../context/ProfileContext';
 import { useStore } from '../context/StoreContext';
 import { formatTaka } from '../lib/format';
 import { BrandLogo } from './BrandLogo';
 
 export function Header() {
-  const { products, categories, wishlist, searchQuery, setSearchQuery, showToast } = useStore();
-  const { user, openAuthModal, signOutUser } = useAuth();
+  const { products, categories, wishlist, searchQuery, setSearchQuery } = useStore();
+  const { activeProfile, isActiveProfileLocked } = useProfile();
   const navigate = useNavigate();
   const location = useLocation();
   const { scrollY } = useScroll();
@@ -243,63 +242,52 @@ export function Header() {
                 transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                 className="liquid-glass-panel absolute right-0 top-[calc(100%+12px)] z-50 w-68 rounded-[28px] p-3"
               >
-                {/* Member Sign Up / Google Account Section */}
+                {/* Customer Profile Card (No Sign-Up / Login Needed) */}
                 <div className="liquid-glass-card mb-2.5 rounded-2xl p-3">
-                  {user ? (
-                    <div className="flex items-center justify-between gap-2.5">
-                      <div className="flex min-w-0 items-center gap-2.5">
-                        {user.photoURL ? (
-                          <img
-                            src={user.photoURL}
-                            alt={user.displayName || 'Member'}
-                            referrerPolicy="no-referrer"
-                            className="h-8 w-8 shrink-0 rounded-full border border-[#B7C9ED] object-cover"
-                          />
-                        ) : (
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#1C3265] font-display text-xs font-bold text-white">
-                            {(user.displayName || user.email || 'T').slice(0, 1).toUpperCase()}
-                          </span>
-                        )}
-                        <div className="min-w-0">
-                          <p className="truncate font-display text-xs font-bold text-[#101A35]">
-                            {user.displayName || 'Member'}
-                          </p>
-                          <p className="truncate text-[10px] text-[#6385CB]">
-                            {user.email}
-                          </p>
-                        </div>
+                  <div className="flex items-center justify-between gap-2.5">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      {activeProfile.avatarUrl ? (
+                        <img
+                          src={activeProfile.avatarUrl}
+                          alt={activeProfile.name}
+                          className="h-9 w-9 shrink-0 rounded-full border border-white object-cover shadow-xs"
+                        />
+                      ) : (
+                        <span
+                          style={{ backgroundColor: activeProfile.avatarAccent || '#1C3265' }}
+                          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-xs font-bold text-white"
+                        >
+                          {(activeProfile.name || 'T').slice(0, 1).toUpperCase()}
+                        </span>
+                      )}
+                      <div className="min-w-0">
+                        <p className="flex items-center gap-1 truncate font-display text-xs font-bold text-[#101A35]">
+                          <span className="truncate">{activeProfile.name}</span>
+                          {activeProfile.hasPin && (
+                            <Lock
+                              className={`h-3 w-3 shrink-0 ${
+                                isActiveProfileLocked ? 'text-[#101A35]' : 'text-[#3156A5]'
+                              }`}
+                            />
+                          )}
+                        </p>
+                        <p className="truncate font-accent text-[10px] font-semibold text-[#3156A5]">
+                          {activeProfile.profileCode}
+                          {isActiveProfileLocked ? ' · Locked' : ''}
+                        </p>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMenuOpen(false);
-                          void signOutUser().then(() => showToast('Signed out.'));
-                        }}
-                        aria-label="Sign out"
-                        title="Sign out"
-                        className="apple-btn apple-icon-btn inline-flex h-8 w-8 shrink-0 items-center justify-center text-[#1C3265]"
-                      >
-                        <LogOut className="relative z-10 h-3.5 w-3.5" />
-                      </button>
                     </div>
-                  ) : (
-                    <div>
-                      <p className="font-accent text-[10px] font-semibold tracking-[0.14em] text-[#3156A5] uppercase">
-                        Member Access
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMenuOpen(false);
-                          openAuthModal('signup');
-                        }}
-                        className="apple-btn apple-btn-primary mt-2 flex h-9 w-full items-center justify-center gap-1.5 px-3 text-xs font-semibold"
-                      >
-                        <UserPlus className="relative z-10 h-3.5 w-3.5" />
-                        <span className="relative z-10">Sign Up / Google</span>
-                      </button>
-                    </div>
-                  )}
+                  </div>
+                  <Link
+                    to="/profile"
+                    onClick={() => setMenuOpen(false)}
+                    className="apple-btn apple-btn-primary mt-2.5 flex h-9 w-full items-center justify-center gap-1.5 px-3 text-xs font-semibold"
+                  >
+                    <User className="relative z-10 h-3.5 w-3.5" />
+                    <span className="relative z-10">
+                      {isActiveProfileLocked ? 'Unlock Profile' : 'Customer Profile'}
+                    </span>
+                  </Link>
                 </div>
 
                 <nav aria-label="Menu" className="flex flex-col gap-1">

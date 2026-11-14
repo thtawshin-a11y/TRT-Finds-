@@ -65,7 +65,7 @@ interface ProductRecord {
 
 interface AnalyticsRecord {
   id: string;
-  type: 'site_visit' | 'product_view' | 'affiliate_click';
+  type: 'site_visit' | 'product_view' | 'affiliate_click' | 'profile_created';
   productId: string | null;
   productTitle: string | null;
   categoryId: string | null;
@@ -94,6 +94,25 @@ interface SiteSettings {
   enableReloadAnimation: boolean;
 }
 
+interface CustomerProfileRecord {
+  id: string;
+  profileCode: string;
+  name: string;
+  phone: string;
+  city: string;
+  deliveryNote: string;
+  avatarUrl?: string | null;
+  avatarAccent: string;
+  favoriteCategories: string[];
+  wishlist: unknown[];
+  recentlyViewedSlugs: string[];
+  hasPin?: boolean;
+  pinSalt?: string;
+  pinHash?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 interface StoreData {
   adminSecretKey: string;
   passwordSalt: string;
@@ -101,6 +120,7 @@ interface StoreData {
   categories: CategoryRecord[];
   products: ProductRecord[];
   analytics: AnalyticsRecord[];
+  profiles?: Record<string, CustomerProfileRecord>;
   settings: SiteSettings;
 }
 
@@ -291,6 +311,7 @@ function createInitialStore(): StoreData {
     categories,
     products,
     analytics: [],
+    profiles: {},
     settings,
   };
 }
@@ -405,7 +426,7 @@ async function startServer() {
     if (
       !body ||
       !body.type ||
-      !['site_visit', 'product_view', 'affiliate_click'].includes(body.type)
+      !['site_visit', 'product_view', 'affiliate_click', 'profile_created'].includes(body.type)
     ) {
       res.status(400).json({ error: 'Invalid analytics event type' });
       return;
@@ -436,6 +457,126 @@ async function startServer() {
     }
     writeStore(store);
     res.json({ ok: true });
+  });
+
+  // --- Passwordless Customer Profile Sync & PIN Security Endpoints ---
+  app.get('/api/profiles/:code', (req, res) => {
+    const code = String(req.params.code || '')
+      .trim()
+      .toUpperCase()
+      .replace(/[^A-Z0-9-]/g, '');
+    if (!code || code.length < 6) {
+      res.status(400).json({ error: 'Invalid profile code.' });
+      return;
+    }
+    const store = readStore();
+    const profile = store.profiles?.[code];
+    if (!profile) {
+      res.status(404).json({ error: 'Profile code not found.' });
+      return;
+    }
+    if (profile.hasPin && profile.pinHash) {
+      res.json({
+        locked: true,
+        profilePreview: {
+          profileCode: profile.profileCode,
+          name: profile.name,
+          avatarUrl: profile.avatarUrl || null,
+          avatarAccent: profile.avatarAccent,
+          hasPin: true,
+        },
+      });
+      return;
+    }
+    res.json({ locked: false, profile });
+  });
+
+  app.post('/api/profiles/unlock', (req, res) => {
+    const { code: rawCode, pin } = req.body as { code?: string; pin?: string };
+    const code = String(rawCode || '')
+      .trim()
+      .toUpperCase()
+      .replace(/[^A-Z0-9-]/g, '');
+    if (!code || !pin) {
+      res.status(400).json({ error: 'Profile code and Security PIN are required.' });
+      return;
+    }
+    const store = readStore();
+    const profile = store.profiles?.[code];
+    if (!profile) {
+      res.status(404).json({ error: 'Profile code not found.' });
+      return;
+    }
+    if (!profile.hasPin || !profile.pinHash || !profile.pinSalt) {
+      res.json({ profile });
+      return;
+    }
+    const attemptHash = crypto
+      .createHash('sha256')
+      .update(`${profile.pinSalt}:${String(pin).trim()}`)
+      .digest('hex');
+    if (attemptHash !== profile.pinHash) {
+      res.status(401).json({ error: 'Incorrect Security PIN.' });
+      return;
+    }
+    res.json({ profile });
+  });
+
+  app.post('/api/profiles/sync', (req, res) => {
+    const body = req.body as Partial<CustomerProfileRecord> & { authorizedPinHash?: string };
+    const code = String(body?.profileCode || '')
+      .trim()
+      .toUpperCase()
+      .replace(/[^A-Z0-9-]/g, '');
+    if (!code || code.length < 6 || code.length > 32) {
+      res.status(400).json({ error: 'Valid profile code is required.' });
+      return;
+    }
+    const store = readStore();
+    if (!store.profiles) store.profiles = {};
+    const existing = store.profiles[code];
+    if (
+      existing?.hasPin &&
+      existing.pinHash &&
+      body.authorizedPinHash !== existing.pinHash &&
+      body.pinHash !== existing.pinHash
+    ) {
+      res.status(403).json({ error: 'Unlock this profile with its Security PIN before syncing changes.' });
+      return;
+    }
+    const now = Date.now();
+    const safeAvatar =
+      typeof body.avatarUrl === 'string' && body.avatarUrl.length <= 220000
+        ? body.avatarUrl
+        : body.avatarUrl === null
+          ? null
+          : existing?.avatarUrl ?? null;
+
+    const record: CustomerProfileRecord = {
+      id: body.id ? String(body.id).slice(0, 80) : existing?.id || `prof_${now.toString(36)}`,
+      profileCode: code,
+      name: String(body.name || existing?.name || 'TRT Shopper').trim().slice(0, 80),
+      phone: String(body.phone || '').trim().slice(0, 40),
+      city: String(body.city || '').trim().slice(0, 80),
+      deliveryNote: String(body.deliveryNote || '').trim().slice(0, 300),
+      avatarUrl: safeAvatar,
+      avatarAccent: String(body.avatarAccent || '#1C3265').slice(0, 20),
+      favoriteCategories: Array.isArray(body.favoriteCategories)
+        ? body.favoriteCategories.map((c) => String(c).slice(0, 60)).slice(0, 20)
+        : [],
+      wishlist: Array.isArray(body.wishlist) ? body.wishlist.slice(0, 200) : [],
+      recentlyViewedSlugs: Array.isArray(body.recentlyViewedSlugs)
+        ? body.recentlyViewedSlugs.map((s) => String(s).slice(0, 120)).slice(0, 30)
+        : [],
+      hasPin: Boolean(body.hasPin),
+      pinSalt: body.hasPin && body.pinSalt ? String(body.pinSalt).slice(0, 64) : undefined,
+      pinHash: body.hasPin && body.pinHash ? String(body.pinHash).slice(0, 128) : undefined,
+      createdAt: existing?.createdAt || Number(body.createdAt) || now,
+      updatedAt: now,
+    };
+    store.profiles[code] = record;
+    writeStore(store);
+    res.json({ profile: record });
   });
 
   // --- Admin Auth (Password Only) ---
@@ -495,6 +636,7 @@ async function startServer() {
       products: [...store.products].sort((a, b) => b.updatedAt - a.updatedAt),
       categories: [...store.categories].sort((a, b) => a.sortOrder - b.sortOrder),
       analytics: store.analytics,
+      profileCount: Object.keys(store.profiles || {}).length,
       settings: store.settings,
     });
   });

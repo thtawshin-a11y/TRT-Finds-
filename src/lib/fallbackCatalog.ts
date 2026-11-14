@@ -351,16 +351,28 @@ export function staticFetchDashboard(token: string): {
   products: Product[];
   categories: Category[];
   analytics: AnalyticsEvent[];
+  profileCount: number;
   settings: SiteSettings;
 } {
   if (!staticVerifyToken(token)) throw new Error('Admin session expired.');
   const state = readStaticState();
+  let profileCount = 0;
+  try {
+    const rawProfiles = window.localStorage.getItem('trt_finds_customer_profiles_v1');
+    if (rawProfiles) {
+      const parsed = JSON.parse(rawProfiles) as unknown;
+      if (Array.isArray(parsed)) profileCount = parsed.length;
+    }
+  } catch {
+    profileCount = 0;
+  }
   return {
     products: [...state.products].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
     categories: [...state.categories].sort(
       (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.name.localeCompare(b.name)
     ),
     analytics: [...state.analytics].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+    profileCount,
     settings: { ...DEFAULT_SITE_SETTINGS, ...state.settings },
   };
 }

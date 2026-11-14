@@ -2,8 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { DEFAULT_SITE_SETTINGS, fetchStorefrontData } from '../lib/apiClient';
 import { getStaticStorefrontData } from '../lib/fallbackCatalog';
 import type { Category, Product, SiteSettings, WishlistItem } from '../types';
-
-const WISHLIST_STORAGE_KEY = 'trt_finds_wishlist_v1';
+import { useProfile } from './ProfileContext';
 
 interface StoreContextValue {
   products: Product[];
@@ -27,35 +26,17 @@ interface StoreContextValue {
 
 const StoreContext = createContext<StoreContextValue | null>(null);
 
-function readLocalWishlist(): WishlistItem[] {
-  try {
-    const raw = localStorage.getItem(WISHLIST_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (item): item is WishlistItem =>
-        Boolean(item) &&
-        typeof item === 'object' &&
-        typeof (item as WishlistItem).productId === 'string' &&
-        typeof (item as WishlistItem).title === 'string' &&
-        typeof (item as WishlistItem).slug === 'string' &&
-        typeof (item as WishlistItem).price === 'number'
-    );
-  } catch {
-    return [];
-  }
-}
-
 export function StoreProvider({ children }: { children: React.ReactNode }) {
+  const { activeProfile, updateActiveWishlist } = useProfile();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SITE_SETTINGS);
-  const [wishlist, setWishlist] = useState<WishlistItem[]>(() => readLocalWishlist());
   const [loadingCatalog, setLoadingCatalog] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+
+  const wishlist = activeProfile.wishlist;
 
   const openQuickView = useCallback((product: Product) => {
     setQuickViewProduct(product);
@@ -104,25 +85,6 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     void refreshStorefront();
   }, [refreshStorefront]);
 
-  // Sync wishlist to localStorage and across open browser tabs without requiring customer login
-  useEffect(() => {
-    try {
-      localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlist));
-    } catch {
-      // Ignore storage quota errors
-    }
-  }, [wishlist]);
-
-  useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === WISHLIST_STORAGE_KEY) {
-        setWishlist(readLocalWishlist());
-      }
-    };
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
-  }, []);
-
   const pinnedProducts = useMemo(() => products.filter((p) => p.isPinned), [products]);
   const wishlistIds = useMemo(() => new Set(wishlist.map((w) => w.productId)), [wishlist]);
 
@@ -130,13 +92,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const toggleWishlist = useCallback(
     (product: Product) => {
-      setWishlist((prev) => {
+      updateActiveWishlist((prev) => {
         const exists = prev.some((item) => item.productId === product.id);
         if (exists) {
           showToast('Removed from your wishlist.');
           return prev.filter((item) => item.productId !== product.id);
         }
-        showToast('Saved to your wishlist.');
+        showToast(`Saved to ${activeProfile.name}'s wishlist.`);
         return [
           {
             productId: product.id,
@@ -151,15 +113,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         ];
       });
     },
-    [showToast]
+    [activeProfile.name, showToast, updateActiveWishlist]
   );
 
   const removeWishlistItem = useCallback(
     (productId: string) => {
-      setWishlist((prev) => prev.filter((item) => item.productId !== productId));
+      updateActiveWishlist((prev) => prev.filter((item) => item.productId !== productId));
       showToast('Removed from your wishlist.');
     },
-    [showToast]
+    [showToast, updateActiveWishlist]
   );
 
   return (

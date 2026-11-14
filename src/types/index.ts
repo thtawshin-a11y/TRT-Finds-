@@ -78,7 +78,11 @@ export interface WishlistItem {
   addedAt: number;
 }
 
-export type AnalyticsEventType = 'site_visit' | 'product_view' | 'affiliate_click';
+export type AnalyticsEventType =
+  | 'site_visit'
+  | 'product_view'
+  | 'affiliate_click'
+  | 'profile_created';
 
 export interface AnalyticsEvent {
   id: string;
@@ -112,3 +116,23 @@ export interface SiteSettings {
 }
 
 export type ProductSortOption = 'newest' | 'featured' | 'price-asc' | 'price-desc';
+
+export interface CustomerProfile {
+  id: string;
+  profileCode: string;
+  name: string;
+  phone: string;
+  city: string;
+  deliveryNote: string;
+  avatarUrl?: string | null;
+  avatarAccent: string;
+  favoriteCategories: string[];
+  wishlist: WishlistItem[];
+  recentlyViewedSlugs: string[];
+  hasPin?: boolean;
+  pinSalt?: string;
+  pinHash?: string;
+  trackedCreation?: boolean;
+  createdAt: number;
+  updatedAt: number;
+}

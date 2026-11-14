@@ -44,191 +44,193 @@
   }
 }
 
-/* Hide scrollbars cleanly for horizontal category rail */
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
+@layer components {
+  /* Hide scrollbars cleanly for horizontal category rail */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 
-/* Apple UI Circular / Capsule Buttons with Cursor-Tracking Specular Spotlight */
-.apple-btn {
-  position: relative;
-  overflow: hidden;
-  border-radius: 9999px;
-  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
-  transition:
-    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 200ms ease,
-    border-color 200ms ease,
-    color 200ms ease;
-  will-change: transform;
-}
+  /* Apple UI Circular / Capsule Buttons with Cursor-Tracking Specular Spotlight */
+  .apple-btn {
+    position: relative;
+    overflow: hidden;
+    border-radius: 9999px;
+    transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
+    transition:
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 200ms ease,
+      border-color 200ms ease,
+      color 200ms ease;
+    will-change: transform;
+  }
 
-.apple-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(
-    110px circle at var(--mx, 50%) var(--my, 50%),
-    var(--spotlight, rgba(183, 201, 237, 0.38)),
-    transparent 70%
-  );
-  transition: opacity 200ms ease;
-}
+  .apple-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      110px circle at var(--mx, 50%) var(--my, 50%),
+      var(--spotlight, rgba(183, 201, 237, 0.38)),
+      transparent 70%
+    );
+    transition: opacity 200ms ease;
+  }
 
-.apple-btn:hover::before {
-  opacity: 1;
-}
+  .apple-btn:hover::before {
+    opacity: 1;
+  }
 
-.apple-btn:active {
-  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0) scale(0.96);
-}
+  .apple-btn:active {
+    transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0) scale(0.96);
+  }
 
-.apple-btn-primary {
-  --spotlight: rgba(183, 201, 237, 0.36);
-  background: linear-gradient(180deg, #254182 0%, #162854 58%, #101A35 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.32),
-    inset 0 -1px 0 rgba(10, 18, 40, 0.35),
-    0 8px 20px -6px rgba(16, 26, 53, 0.42);
-}
+  .apple-btn-primary {
+    --spotlight: rgba(183, 201, 237, 0.36);
+    background: linear-gradient(180deg, #254182 0%, #162854 58%, #101A35 100%);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.32),
+      inset 0 -1px 0 rgba(10, 18, 40, 0.35),
+      0 8px 20px -6px rgba(16, 26, 53, 0.42);
+  }
 
-.apple-btn-primary:hover {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.42),
-    0 12px 24px -6px rgba(28, 50, 101, 0.48);
-}
+  .apple-btn-primary:hover {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.42),
+      0 12px 24px -6px rgba(28, 50, 101, 0.48);
+  }
 
-.apple-btn-glass {
-  --spotlight: rgba(49, 86, 165, 0.16);
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  color: #101A35;
-  border: 1px solid rgba(183, 201, 237, 0.85);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    0 4px 14px -4px rgba(28, 50, 101, 0.12);
-}
+  .apple-btn-glass {
+    --spotlight: rgba(49, 86, 165, 0.16);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    color: #101A35;
+    border: 1px solid rgba(183, 201, 237, 0.85);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      0 4px 14px -4px rgba(28, 50, 101, 0.12);
+  }
 
-.apple-btn-glass:hover {
-  background: rgba(241, 244, 252, 0.95);
-  border-color: #3156A5;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    0 8px 20px -5px rgba(49, 86, 165, 0.22);
-}
+  .apple-btn-glass:hover {
+    background: rgba(241, 244, 252, 0.96);
+    border-color: #3156A5;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      0 8px 20px -5px rgba(49, 86, 165, 0.22);
+  }
 
-.apple-icon-btn {
-  --spotlight: rgba(49, 86, 165, 0.2);
-  background: rgba(255, 255, 255, 0.86);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid rgba(183, 201, 237, 0.85);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    0 4px 14px -3px rgba(16, 26, 53, 0.14);
-}
+  .apple-icon-btn {
+    --spotlight: rgba(49, 86, 165, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(183, 201, 237, 0.85);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.96),
+      0 4px 14px -3px rgba(16, 26, 53, 0.14);
+  }
 
-.apple-icon-btn:hover {
-  border-color: #3156A5;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    0 8px 18px -4px rgba(49, 86, 165, 0.26);
-}
+  .apple-icon-btn:hover {
+    border-color: #3156A5;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      0 8px 18px -4px rgba(49, 86, 165, 0.26);
+  }
 
-/* Subtle abstract geometric dot-grid and architectural diagonal texture */
-.trt-grid-surface {
-  background-image:
-    radial-gradient(rgba(99, 133, 203, 0.14) 1px, transparent 1px),
-    linear-gradient(135deg, rgba(183, 201, 237, 0.12) 1px, transparent 1px);
-  background-size: 28px 28px, 120px 120px;
-  background-position: 0 0, 0 0;
-}
+  /* Subtle abstract geometric dot-grid and architectural diagonal texture */
+  .trt-grid-surface {
+    background-image:
+      radial-gradient(rgba(99, 133, 203, 0.14) 1px, transparent 1px),
+      linear-gradient(135deg, rgba(183, 201, 237, 0.12) 1px, transparent 1px);
+    background-size: 28px 28px, 120px 120px;
+    background-position: 0 0, 0 0;
+  }
 
-.trt-diagonal-lines {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgba(28, 50, 101, 0.025) 0px,
-    rgba(28, 50, 101, 0.025) 1px,
-    transparent 1px,
-    transparent 44px
-  );
-}
+  .trt-diagonal-lines {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(28, 50, 101, 0.025) 0px,
+      rgba(28, 50, 101, 0.025) 1px,
+      transparent 1px,
+      transparent 44px
+    );
+  }
 
-.trt-paper-grain {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-}
+  .trt-paper-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
 
-/* Liquid Glass / Glassmorphism Architectural Surfaces */
-.liquid-glass-backdrop {
-  background: radial-gradient(
-    circle at 50% 25%,
-    rgba(99, 133, 203, 0.22),
-    rgba(16, 26, 53, 0.48)
-  );
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-}
+  /* Liquid Glass / Glassmorphism Architectural Surfaces */
+  .liquid-glass-backdrop {
+    background: radial-gradient(
+      circle at 50% 25%,
+      rgba(28, 50, 101, 0.36),
+      rgba(16, 26, 53, 0.62)
+    );
+    backdrop-filter: blur(18px) saturate(145%);
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+  }
 
-.liquid-glass-panel {
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.86) 0%,
-    rgba(241, 244, 252, 0.72) 55%,
-    rgba(255, 255, 255, 0.82) 100%
-  );
-  backdrop-filter: blur(28px) saturate(185%);
-  -webkit-backdrop-filter: blur(28px) saturate(185%);
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(183, 201, 237, 0.45),
-    0 28px 70px -16px rgba(16, 26, 53, 0.32),
-    0 0 0 1px rgba(183, 201, 237, 0.55);
-}
+  .liquid-glass-panel {
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(244, 247, 255, 0.91) 55%,
+      rgba(255, 255, 255, 0.94) 100%
+    );
+    backdrop-filter: blur(32px) saturate(185%);
+    -webkit-backdrop-filter: blur(32px) saturate(185%);
+    border: 1px solid rgba(255, 255, 255, 0.92);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 1),
+      inset 0 -1px 0 rgba(183, 201, 237, 0.45),
+      0 28px 70px -16px rgba(16, 26, 53, 0.35),
+      0 0 0 1px rgba(183, 201, 237, 0.6);
+  }
 
-.liquid-glass-card {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.78) 0%,
-    rgba(241, 244, 252, 0.58) 100%
-  );
-  backdrop-filter: blur(20px) saturate(165%);
-  -webkit-backdrop-filter: blur(20px) saturate(165%);
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    0 12px 32px -12px rgba(28, 50, 101, 0.14),
-    0 0 0 1px rgba(183, 201, 237, 0.48);
-}
+  .liquid-glass-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.88) 0%,
+      rgba(241, 244, 252, 0.76) 100%
+    );
+    backdrop-filter: blur(20px) saturate(165%);
+    -webkit-backdrop-filter: blur(20px) saturate(165%);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.96),
+      0 12px 32px -12px rgba(28, 50, 101, 0.14),
+      0 0 0 1px rgba(183, 201, 237, 0.52);
+  }
 
-.liquid-glass-nav {
-  isolation: isolate;
-  transform: translateZ(0);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.76) 55%,
-    rgba(248, 250, 255, 0.84) 100%
-  );
-  backdrop-filter: blur(22px) saturate(175%);
-  -webkit-backdrop-filter: blur(22px) saturate(175%);
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  box-shadow:
-    inset 0 1.5px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(183, 201, 237, 0.38),
-    0 14px 36px -10px rgba(16, 26, 53, 0.18),
-    0 0 0 1px rgba(183, 201, 237, 0.55);
+  .liquid-glass-nav {
+    isolation: isolate;
+    transform: translateZ(0);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.76) 55%,
+      rgba(248, 250, 255, 0.84) 100%
+    );
+    backdrop-filter: blur(22px) saturate(175%);
+    -webkit-backdrop-filter: blur(22px) saturate(175%);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 1),
+      inset 0 -1px 0 rgba(183, 201, 237, 0.38),
+      0 14px 36px -10px rgba(16, 26, 53, 0.18),
+      0 0 0 1px rgba(183, 201, 237, 0.55);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

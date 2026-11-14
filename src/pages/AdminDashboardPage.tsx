@@ -69,6 +69,7 @@ export function AdminDashboardPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsEvent[]>([]);
+  const [profileCount, setProfileCount] = useState(0);
   const [siteForm, setSiteForm] = useState<SiteSettings>(DEFAULT_SITE_SETTINGS);
 
   // Products tab controls
@@ -131,6 +132,7 @@ export function AdminDashboardPage() {
       setProducts(data.products);
       setCategories(data.categories);
       setAnalytics(data.analytics);
+      setProfileCount(data.profileCount ?? 0);
       setSiteForm({ ...DEFAULT_SITE_SETTINGS, ...data.settings });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unable to load dashboard.';
@@ -183,8 +185,10 @@ export function AdminDashboardPage() {
     const pinned = products.filter((p) => p.isPinned).length;
     const totalClicks = analytics.filter((a) => a.type === 'affiliate_click').length;
     const totalVisits = analytics.filter((a) => a.type === 'site_visit').length;
-    return { total, published, drafts, pinned, totalClicks, totalVisits };
-  }, [products, analytics]);
+    const profileEvents = analytics.filter((a) => a.type === 'profile_created').length;
+    const totalProfiles = Math.max(profileCount, profileEvents);
+    return { total, published, drafts, pinned, totalClicks, totalVisits, totalProfiles };
+  }, [products, analytics, profileCount]);
 
   const filteredProducts = useMemo(() => {
     const q = productSearch.trim().toLowerCase();
@@ -544,7 +548,7 @@ export function AdminDashboardPage() {
           {/* OVERVIEW TAB */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
                 <div className="rounded-3xl border border-[#B7C9ED]/65 bg-white p-5">
                   <span className="font-accent text-[11px] font-semibold tracking-wider text-[#6385CB] uppercase">
                     Total Products
@@ -583,6 +587,14 @@ export function AdminDashboardPage() {
                   </span>
                   <p className="mt-2 font-display text-3xl font-bold tabular-nums text-[#1C3265]">
                     {stats.totalClicks}
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-[#B7C9ED]/65 bg-white p-5">
+                  <span className="font-accent text-[11px] font-semibold tracking-wider text-[#6385CB] uppercase">
+                    Customer Profiles
+                  </span>
+                  <p className="mt-2 font-display text-3xl font-bold tabular-nums text-[#3156A5]">
+                    {stats.totalProfiles}
                   </p>
                 </div>
               </div>
@@ -1181,7 +1193,14 @@ export function AdminDashboardPage() {
           )}
 
           {/* ANALYTICS TAB */}
-          {activeTab === 'analytics' && <AdminAnalyticsPanel events={analytics} />}
+          {activeTab === 'analytics' && (
+            <AdminAnalyticsPanel
+              events={analytics}
+              products={products}
+              categories={categories}
+              profileCount={profileCount}
+            />
+          )}
 
           {/* PASSWORD TAB */}
           {activeTab === 'password' && (
