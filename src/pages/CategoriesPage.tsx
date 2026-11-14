@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
 import { ArrowRight, Layers } from 'lucide-react';
-import { ScrollReveal } from '../components/ScrollEffects';
+import { ScrollParallaxSection, ScrollReveal, ScrollScrubCard } from '../components/ScrollEffects';
 import { useStore } from '../context/StoreContext';
 
 export function CategoriesPage() {
@@ -16,31 +15,25 @@ export function CategoriesPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
       <ScrollReveal className="max-w-2xl">
-        <p className="font-accent text-xs font-semibold tracking-[0.16em] text-[#3156A5] uppercase">
+        <p className="font-accent text-xs font-bold tracking-[0.16em] text-[#1C3265] uppercase">
           Collections
         </p>
         <h1 className="mt-1.5 font-display text-3xl font-extrabold tracking-tight text-[#101A35] sm:text-4xl">
           Discover Categories
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-[#1C3265]/80 sm:text-base">
+        <p className="mt-3 text-sm font-medium leading-relaxed text-[#1C3265] sm:text-base">
           Thoughtfully organized aisles across tech, home, wardrobe, and everyday essentials—plus standalone uncategorized discoveries.
         </p>
       </ScrollReveal>
 
-      <div className="mt-10 grid gap-5 sm:grid-cols-2">
+      <ScrollParallaxSection offsetY={20} className="mt-10 grid gap-5 sm:grid-cols-2">
         {categories.map((cat, idx) => {
           const count = products.filter(
             (p) => p.categoryId === cat.id || p.categoryName === cat.name
           ).length;
 
           return (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{ duration: 0.4, delay: idx * 0.05, ease: [0.16, 1, 0.3, 1] }}
-            >
+            <ScrollScrubCard key={cat.id} index={idx}>
               <Link
                 to={`/shop?category=${encodeURIComponent(cat.id)}`}
                 className="group flex h-full flex-col justify-between rounded-3xl border border-[#B7C9ED]/70 bg-white p-7 transition-all duration-200 hover:-translate-y-1 hover:border-[#3156A5] hover:bg-[#F1F4FC]/45"
@@ -60,7 +53,7 @@ export function CategoriesPage() {
                   </h2>
 
                   {cat.description && (
-                    <p className="mt-2 max-w-md text-sm leading-relaxed text-[#1C3265]/75">
+                    <p className="mt-2 max-w-md text-sm font-medium leading-relaxed text-[#1C3265]">
                       {cat.description}
                     </p>
                   )}
@@ -71,17 +64,12 @@ export function CategoriesPage() {
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </div>
               </Link>
-            </motion.div>
+            </ScrollScrubCard>
           );
         })}
 
         {uncategorizedCount > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.45, delay: categories.length * 0.05, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <ScrollScrubCard index={categories.length}>
             <Link
               to="/shop?category=uncategorized"
               className="group flex h-full flex-col justify-between rounded-3xl border border-[#B7C9ED]/70 bg-[#F1F4FC]/55 p-7 transition-all duration-200 hover:-translate-y-1 hover:border-[#3156A5]"
@@ -108,9 +96,9 @@ export function CategoriesPage() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </div>
             </Link>
-          </motion.div>
+          </ScrollScrubCard>
         )}
-      </div>
+      </ScrollParallaxSection>
     </div>
   );
 }

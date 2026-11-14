@@ -20,6 +20,9 @@ interface StoreContextValue {
   refreshStorefront: () => Promise<void>;
   toastMessage: string | null;
   showToast: (msg: string) => void;
+  quickViewProduct: Product | null;
+  openQuickView: (product: Product) => void;
+  closeQuickView: () => void;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -52,6 +55,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [loadingCatalog, setLoadingCatalog] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+
+  const openQuickView = useCallback((product: Product) => {
+    setQuickViewProduct(product);
+  }, []);
+
+  const closeQuickView = useCallback(() => {
+    setQuickViewProduct(null);
+  }, []);
 
   const showToast = useCallback((msg: string) => {
     setToastMessage(msg);
@@ -132,7 +144,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
             slug: product.slug,
             price: product.price,
             image: product.images?.[0] || null,
-            affiliateUrl: product.affiliateUrl,
+            affiliateUrl: product.affiliateUrl ?? null,
             addedAt: Date.now(),
           },
           ...prev,
@@ -167,6 +179,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         refreshStorefront,
         toastMessage,
         showToast,
+        quickViewProduct,
+        openQuickView,
+        closeQuickView,
       }}
     >
       {children}

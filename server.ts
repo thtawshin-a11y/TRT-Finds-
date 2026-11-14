@@ -30,6 +30,14 @@ interface ProductSpec {
   value: string;
 }
 
+interface ColorVariant {
+  id: string;
+  name: string;
+  hexes: string[];
+  images: string[];
+  inStock?: boolean;
+}
+
 interface ProductRecord {
   id: string;
   title: string;
@@ -43,11 +51,12 @@ interface ProductRecord {
   images: string[];
   video: string | null;
   colors: string[] | null;
+  colorVariants?: ColorVariant[] | null;
   sizes: string[] | null;
   stock: number | null;
   rating: number | null;
   specifications: ProductSpec[] | null;
-  affiliateUrl: string;
+  affiliateUrl: string | null;
   isPinned: boolean;
   isPublished: boolean;
   createdAt: number;
@@ -529,24 +538,29 @@ async function startServer() {
 
   app.post('/api/admin/products', requireAdmin, (req, res) => {
     const body = req.body as Partial<ProductRecord>;
-    if (!body.title || body.price === undefined || !body.images?.length || !body.affiliateUrl) {
+    const numericPrice = Number(body.price);
+    if (body.price === undefined || body.price === null || Number.isNaN(numericPrice) || numericPrice < 0) {
       res.status(400).json({
-        error: 'Title, Price (৳), at least 1 Image, and Affiliate URL are required.',
+        error: 'A valid Price (৳) is required.',
       });
       return;
     }
 
     const store = readStore();
     const now = Date.now();
-    const baseSlug = slugify(body.slug || body.title);
+    const cleanTitle =
+      body.title && String(body.title).trim()
+        ? String(body.title).trim().slice(0, 160)
+        : `Curated Find ৳${Math.round(numericPrice)}`;
+    const baseSlug = slugify(body.slug || cleanTitle);
     const existsSlug = store.products.some((p) => p.slug === baseSlug);
     const finalSlug = existsSlug ? `${baseSlug}-${now.toString(36).slice(-4)}` : baseSlug;
 
     const newProduct: ProductRecord = {
       id: `prod_${now.toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
-      title: String(body.title).trim().slice(0, 160),
+      title: cleanTitle,
       slug: finalSlug,
-      price: Math.max(0, Number(body.price) || 0),
+      price: Math.max(0, numericPrice),
       originalPrice:
         body.originalPrice !== null && body.originalPrice !== undefined
           ? Math.max(0, Number(body.originalPrice))
@@ -558,9 +572,12 @@ async function startServer() {
       description: body.description ? String(body.description).trim().slice(0, 5000) : null,
       categoryId: body.categoryId || null,
       categoryName: body.categoryName || null,
-      images: body.images.slice(0, 12),
+      images: Array.isArray(body.images) ? body.images.slice(0, 24) : [],
       video: body.video || null,
       colors: body.colors?.length ? body.colors.slice(0, 20) : null,
+      colorVariants: Array.isArray(body.colorVariants) && body.colorVariants.length
+        ? body.colorVariants.slice(0, 20)
+        : null,
       sizes: body.sizes?.length ? body.sizes.slice(0, 20) : null,
       stock:
         body.stock !== null && body.stock !== undefined
@@ -571,7 +588,9 @@ async function startServer() {
           ? Math.min(5, Math.max(0, Number(body.rating)))
           : null,
       specifications: body.specifications?.length ? body.specifications.slice(0, 30) : null,
-      affiliateUrl: String(body.affiliateUrl).trim().slice(0, 1000),
+      affiliateUrl: body.affiliateUrl && String(body.affiliateUrl).trim()
+        ? String(body.affiliateUrl).trim().slice(0, 1000)
+        : null,
       isPinned: Boolean(body.isPinned),
       isPublished: body.isPublished !== undefined ? Boolean(body.isPublished) : true,
       createdAt: now,
@@ -598,6 +617,12 @@ async function startServer() {
       ...body,
       id: existing.id,
       slug: body.slug ? slugify(body.slug) : existing.slug,
+      affiliateUrl:
+        body.affiliateUrl !== undefined
+          ? body.affiliateUrl && String(body.affiliateUrl).trim()
+            ? String(body.affiliateUrl).trim().slice(0, 1000)
+            : null
+          : existing.affiliateUrl,
       createdAt: existing.createdAt,
       updatedAt: Date.now(),
     };

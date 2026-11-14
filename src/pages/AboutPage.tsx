@@ -13,7 +13,7 @@ export function AboutPage() {
         <div className="rounded-3xl border border-[#B7C9ED]/65 bg-white p-8 sm:p-12">
           <BrandLogo size="lg" showWordmark />
 
-          <p className="mt-7 font-accent text-xs font-semibold tracking-[0.18em] text-[#3156A5] uppercase">
+          <p className="mt-7 font-accent text-xs font-bold tracking-[0.18em] text-[#1C3265] uppercase">
             {settings.brandPhilosophy}
           </p>
 
@@ -21,15 +21,15 @@ export function AboutPage() {
             {settings.aboutTitle}
           </h1>
 
-          <div className="mt-6 space-y-4 whitespace-pre-line text-sm leading-relaxed text-[#1C3265]/85 sm:text-base">
+          <div className="mt-6 space-y-4 whitespace-pre-line text-sm font-medium leading-relaxed text-[#1C3265] sm:text-base">
             <p>{settings.aboutBody}</p>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-[#B7C9ED]/60 bg-[#F1F4FC]/65 p-6">
+          <div className="mt-8 rounded-2xl border border-[#B7C9ED]/75 bg-[#F1F4FC]/75 p-6">
             <h2 className="font-display text-sm font-bold text-[#101A35]">
               Transparent Affiliate Disclosure
             </h2>
-            <p className="mt-1.5 text-xs leading-relaxed text-[#1C3265]/80 sm:text-sm">
+            <p className="mt-1.5 text-xs font-medium leading-relaxed text-[#1C3265] sm:text-sm">
               {settings.affiliateDisclosure}
             </p>
           </div>

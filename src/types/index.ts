@@ -3,6 +3,14 @@ export interface ProductSpecification {
   value: string;
 }
 
+export interface ColorVariant {
+  id: string;
+  name: string;
+  hexes: string[];
+  images: string[];
+  inStock?: boolean;
+}
+
 export interface Product {
   id: string;
   title: string;
@@ -16,11 +24,12 @@ export interface Product {
   images: string[];
   video?: string | null;
   colors?: string[] | null;
+  colorVariants?: ColorVariant[] | null;
   sizes?: string[] | null;
   stock?: number | null;
   rating?: number | null;
   specifications?: ProductSpecification[] | null;
-  affiliateUrl: string;
+  affiliateUrl?: string | null;
   isPinned: boolean;
   isPublished: boolean;
   createdAt?: number;
@@ -39,11 +48,12 @@ export interface ProductFormInput {
   images: string[];
   video: string | null;
   colors: string[] | null;
+  colorVariants?: ColorVariant[] | null;
   sizes: string[] | null;
   stock: number | null;
   rating: number | null;
   specifications: ProductSpecification[] | null;
-  affiliateUrl: string;
+  affiliateUrl: string | null;
   isPinned: boolean;
   isPublished: boolean;
 }
@@ -64,7 +74,7 @@ export interface WishlistItem {
   slug: string;
   price: number;
   image?: string | null;
-  affiliateUrl: string;
+  affiliateUrl?: string | null;
   addedAt: number;
 }
 

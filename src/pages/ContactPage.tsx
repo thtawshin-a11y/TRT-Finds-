@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'motion/react';
 import { Clock, Mail, MapPin, Phone, Send } from 'lucide-react';
-import { ScrollReveal } from '../components/ScrollEffects';
+import { ScrollReveal, ScrollScrubCard } from '../components/ScrollEffects';
 import { useStore } from '../context/StoreContext';
 
 export function ContactPage() {
@@ -38,67 +37,55 @@ export function ContactPage() {
       <div className="mt-10 grid gap-6 lg:grid-cols-12">
         {/* Bento Contact Details */}
         <div className="grid gap-4 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
-          <motion.div
-            initial={{ opacity: 0, y: 26 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.5, delay: 0, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-3xl border border-[#B7C9ED]/65 bg-white p-6"
-          >
-            <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F1F4FC] text-[#1C3265]">
-              <Mail className="h-4.5 w-4.5" />
-            </div>
-            <p className="mt-4 font-accent text-xs font-semibold tracking-wider text-[#6385CB] uppercase">
-              Email
-            </p>
-            <p className="mt-1 font-display text-base font-bold text-[#101A35]">
-              {settings.contactEmail}
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 26 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-3xl border border-[#B7C9ED]/65 bg-white p-6"
-          >
-            <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F1F4FC] text-[#1C3265]">
-              <Phone className="h-4.5 w-4.5" />
-            </div>
-            <p className="mt-4 font-accent text-xs font-semibold tracking-wider text-[#6385CB] uppercase">
-              Phone
-            </p>
-            <p className="mt-1 font-display text-base font-bold tabular-nums text-[#101A35]">
-              {settings.contactPhone}
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 26 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.5, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-3xl border border-[#B7C9ED]/65 bg-[#F1F4FC]/60 p-6"
-          >
-            <div className="flex items-start gap-4">
-              <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#1C3265]">
-                <MapPin className="h-4.5 w-4.5" />
+          <ScrollScrubCard index={0}>
+            <div className="rounded-3xl border border-[#B7C9ED]/65 bg-white p-6">
+              <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F1F4FC] text-[#1C3265]">
+                <Mail className="h-4.5 w-4.5" />
               </div>
-              <div>
-                <p className="font-accent text-xs font-semibold tracking-wider text-[#6385CB] uppercase">
-                  Location & Hours
-                </p>
-                <p className="mt-1 font-display text-sm font-bold text-[#101A35]">
-                  {settings.contactAddress}
-                </p>
-                <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-[#1C3265]/75">
-                  <Clock className="h-3.5 w-3.5" />
-                  <span>{settings.contactHours}</span>
-                </p>
+              <p className="mt-4 font-accent text-xs font-semibold tracking-wider text-[#6385CB] uppercase">
+                Email
+              </p>
+              <p className="mt-1 font-display text-base font-bold text-[#101A35]">
+                {settings.contactEmail}
+              </p>
+            </div>
+          </ScrollScrubCard>
+
+          <ScrollScrubCard index={1}>
+            <div className="rounded-3xl border border-[#B7C9ED]/65 bg-white p-6">
+              <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F1F4FC] text-[#1C3265]">
+                <Phone className="h-4.5 w-4.5" />
+              </div>
+              <p className="mt-4 font-accent text-xs font-semibold tracking-wider text-[#6385CB] uppercase">
+                Phone
+              </p>
+              <p className="mt-1 font-display text-base font-bold tabular-nums text-[#101A35]">
+                {settings.contactPhone}
+              </p>
+            </div>
+          </ScrollScrubCard>
+
+          <ScrollScrubCard index={2}>
+            <div className="rounded-3xl border border-[#B7C9ED]/65 bg-[#F1F4FC]/60 p-6">
+              <div className="flex items-start gap-4">
+                <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#1C3265]">
+                  <MapPin className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <p className="font-accent text-xs font-semibold tracking-wider text-[#6385CB] uppercase">
+                    Location & Hours
+                  </p>
+                  <p className="mt-1 font-display text-sm font-bold text-[#101A35]">
+                    {settings.contactAddress}
+                  </p>
+                  <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-[#1C3265]/75">
+                    <Clock className="h-3.5 w-3.5" />
+                    <span>{settings.contactHours}</span>
+                  </p>
+                </div>
               </div>
             </div>
-          </motion.div>
+          </ScrollScrubCard>
         </div>
 
         {/* Contact Form */}

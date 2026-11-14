@@ -10,14 +10,14 @@ export function Footer() {
 
   return (
     <footer className="mt-20 bg-[#F1F4FC]/45">
-      <ScrollReveal className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <ScrollReveal className="mx-auto max-w-7xl px-4 pb-24 pt-14 sm:px-6 md:py-14 lg:px-8">
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
             <BrandLogo size="md" showWordmark />
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-[#1C3265]/80">
+            <p className="mt-4 max-w-sm text-sm font-medium leading-relaxed text-[#1C3265]">
               {settings.heroHeadline} {settings.heroSubtext}
             </p>
-            <p className="mt-4 font-accent text-xs font-semibold tracking-[0.14em] text-[#3156A5] uppercase">
+            <p className="mt-4 font-accent text-xs font-bold tracking-[0.14em] text-[#101A35] uppercase">
               {settings.brandPhilosophy}
             </p>
           </div>
@@ -27,19 +27,19 @@ export function Footer() {
               <span className="font-accent text-xs font-semibold tracking-wider text-[#101A35] uppercase">
                 Navigate
               </span>
-              <Link to="/" className="text-[#1C3265]/75 transition-colors hover:text-[#101A35]">
+              <Link to="/" className="font-medium text-[#1C3265] transition-colors hover:text-[#101A35]">
                 Home
               </Link>
-              <Link to="/shop" className="text-[#1C3265]/75 transition-colors hover:text-[#101A35]">
+              <Link to="/shop" className="font-medium text-[#1C3265] transition-colors hover:text-[#101A35]">
                 Shop
               </Link>
-              <Link to="/categories" className="text-[#1C3265]/75 transition-colors hover:text-[#101A35]">
+              <Link to="/categories" className="font-medium text-[#1C3265] transition-colors hover:text-[#101A35]">
                 Categories
               </Link>
-              <Link to="/about" className="text-[#1C3265]/75 transition-colors hover:text-[#101A35]">
+              <Link to="/about" className="font-medium text-[#1C3265] transition-colors hover:text-[#101A35]">
                 About
               </Link>
-              <Link to="/contact" className="text-[#1C3265]/75 transition-colors hover:text-[#101A35]">
+              <Link to="/contact" className="font-medium text-[#1C3265] transition-colors hover:text-[#101A35]">
                 Contact
               </Link>
             </div>
@@ -47,24 +47,24 @@ export function Footer() {
               <span className="font-accent text-xs font-semibold tracking-wider text-[#101A35] uppercase">
                 Saved & More
               </span>
-              <Link to="/wishlist" className="text-[#1C3265]/75 transition-colors hover:text-[#101A35]">
+              <Link to="/wishlist" className="font-medium text-[#1C3265] transition-colors hover:text-[#101A35]">
                 Wishlist
               </Link>
-              <span className="text-xs text-[#6385CB]">{settings.socialHandle}</span>
+              <span className="text-xs font-semibold text-[#1C3265]">{settings.socialHandle}</span>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-[#B7C9ED]/60 bg-white p-6 md:col-span-4">
-            <p className="font-accent text-xs font-semibold tracking-wider text-[#101A35] uppercase">
+          <div className="rounded-3xl border border-[#B7C9ED]/75 bg-white p-6 md:col-span-4">
+            <p className="font-accent text-xs font-bold tracking-wider text-[#101A35] uppercase">
               Affiliate Disclosure
             </p>
-            <p className="mt-2 text-xs leading-relaxed text-[#1C3265]/80">
+            <p className="mt-2 text-xs font-medium leading-relaxed text-[#1C3265]">
               {settings.affiliateDisclosure}
             </p>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-[#B7C9ED]/40 pt-6 text-xs text-[#1C3265]/70 sm:flex-row sm:items-center">
+        <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-[#B7C9ED]/50 pt-6 text-xs font-medium text-[#1C3265] sm:flex-row sm:items-center">
           <p>© {year} TRT FINDS ({settings.socialHandle}). All rights reserved.</p>
 
           {/* Separate Admin Portal entry at the bottom */}

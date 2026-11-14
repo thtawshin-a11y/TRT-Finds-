@@ -1,50 +1,32 @@
-import { useEffect } from 'react';
-import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'motion/react';
+import { useEffect, useState } from 'react';
+import { motion, useMotionValue, useScroll, useTransform } from 'motion/react';
 
 export function GeometricBackdrop() {
+  const [enableMouseParallax, setEnableMouseParallax] = useState(false);
   const { scrollY } = useScroll();
-  const smoothScrollY = useSpring(scrollY, {
-    stiffness: 110,
-    damping: 26,
-    mass: 0.6,
-    restDelta: 0.001,
-  });
 
-  // Normalized mouse coordinates (-1 to +1 from viewport center)
-  const rawMouseX = useMotionValue(0);
-  const rawMouseY = useMotionValue(0);
-
-  const smoothMouseX = useSpring(rawMouseX, {
-    stiffness: 85,
-    damping: 24,
-    mass: 0.7,
-    restDelta: 0.001,
-  });
-  const smoothMouseY = useSpring(rawMouseY, {
-    stiffness: 85,
-    damping: 24,
-    mass: 0.7,
-    restDelta: 0.001,
-  });
+  // Normalized mouse coordinates (-1 to +1 from viewport center) on desktop only
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
   useEffect(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
     const finePointer = window.matchMedia('(pointer: fine)');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (!finePointer?.matches || reducedMotion?.matches) return;
+    const canTrack = Boolean(finePointer?.matches) && !reducedMotion?.matches;
+    setEnableMouseParallax(canTrack);
+    if (!canTrack) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       const w = window.innerWidth || 1;
       const h = window.innerHeight || 1;
-      const nx = (e.clientX / w - 0.5) * 2;
-      const ny = (e.clientY / h - 0.5) * 2;
-      rawMouseX.set(nx);
-      rawMouseY.set(ny);
+      mouseX.set((e.clientX / w - 0.5) * 2);
+      mouseY.set((e.clientY / h - 0.5) * 2);
     };
 
     const handleMouseLeave = () => {
-      rawMouseX.set(0);
-      rawMouseY.set(0);
+      mouseX.set(0);
+      mouseY.set(0);
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
@@ -54,43 +36,37 @@ export function GeometricBackdrop() {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [rawMouseX, rawMouseY]);
+  }, [mouseX, mouseY]);
 
-  // Inverse mouse-following parallax depths (shapes shift gently opposite cursor movement)
-  const topParallaxX = useTransform(smoothMouseX, [-1, 1], [28, -28]);
-  const topParallaxY = useTransform(smoothMouseY, [-1, 1], [22, -22]);
+  // Inverse mouse-following parallax depths (desktop only)
+  const topParallaxX = useTransform(mouseX, [-1, 1], [22, -22]);
+  const topParallaxY = useTransform(mouseY, [-1, 1], [18, -18]);
 
-  const leftParallaxX = useTransform(smoothMouseX, [-1, 1], [38, -38]);
-  const leftParallaxY = useTransform(smoothMouseY, [-1, 1], [30, -30]);
+  const leftParallaxX = useTransform(mouseX, [-1, 1], [28, -28]);
+  const leftParallaxY = useTransform(mouseY, [-1, 1], [22, -22]);
 
-  const bottomParallaxX = useTransform(smoothMouseX, [-1, 1], [20, -20]);
-  const bottomParallaxY = useTransform(smoothMouseY, [-1, 1], [16, -16]);
+  const bottomParallaxX = useTransform(mouseX, [-1, 1], [16, -16]);
+  const bottomParallaxY = useTransform(mouseY, [-1, 1], [12, -12]);
 
-  const gridParallaxX = useTransform(smoothMouseX, [-1, 1], [10, -10]);
-  const gridParallaxY = useTransform(smoothMouseY, [-1, 1], [8, -8]);
+  // Direct GPU scroll transforms (lightweight without nested scroll springs)
+  const topOrbRotate = useTransform(scrollY, [0, 2600], [0, 180]);
+  const topOrbY = useTransform(scrollY, [0, 2600], [0, 90]);
 
-  // Bidirectional scroll transforms: scrolling down rotates forward, scrolling back reverses cleanly
-  const topOrbRotate = useTransform(smoothScrollY, [0, 2600], [0, 220]);
-  const topOrbY = useTransform(smoothScrollY, [0, 2600], [0, 110]);
+  const leftDiamondRotate = useTransform(scrollY, [0, 2600], [14, -180]);
+  const leftDiamondY = useTransform(scrollY, [0, 2600], [0, -90]);
 
-  const leftDiamondRotate = useTransform(smoothScrollY, [0, 2600], [14, -210]);
-  const leftDiamondY = useTransform(smoothScrollY, [0, 2600], [0, -120]);
-
-  const bottomRingRotate = useTransform(smoothScrollY, [0, 2600], [-18, 260]);
-  const bottomRingX = useTransform(smoothScrollY, [0, 2600], [0, -45]);
-
-  const gridScrollY = useTransform(smoothScrollY, [0, 2600], [0, -70]);
+  const bottomRingRotate = useTransform(scrollY, [0, 2600], [-18, 200]);
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-white">
-      {/* Top-Right Architectural Orbital Plane (mouse parallax wrapper + scroll rotation) */}
+      {/* Top-Right Architectural Orbital Plane */}
       <motion.div
-        style={{ x: topParallaxX, y: topParallaxY }}
+        style={enableMouseParallax ? { x: topParallaxX, y: topParallaxY } : undefined}
         className="absolute -top-44 right-[-12%]"
       >
         <motion.div
           style={{ rotate: topOrbRotate, y: topOrbY }}
-          className="flex h-[520px] w-[520px] items-center justify-center rounded-[72px] border border-[#B7C9ED]/45 bg-[#F1F4FC]/75 sm:h-[600px] sm:w-[600px]"
+          className="flex h-[460px] w-[460px] items-center justify-center rounded-[72px] border border-[#B7C9ED]/45 bg-[#F1F4FC]/70 will-change-transform sm:h-[580px] sm:w-[580px]"
         >
           <svg viewBox="0 0 240 240" className="h-[78%] w-[78%] text-[#6385CB]" fill="none">
             <circle
@@ -98,18 +74,11 @@ export function GeometricBackdrop() {
               cy="120"
               r="98"
               stroke="currentColor"
-              strokeOpacity="0.32"
+              strokeOpacity="0.3"
               strokeWidth="1.2"
               strokeDasharray="6 8"
             />
-            <circle
-              cx="120"
-              cy="120"
-              r="68"
-              stroke="#1C3265"
-              strokeOpacity="0.18"
-              strokeWidth="1"
-            />
+            <circle cx="120" cy="120" r="68" stroke="#1C3265" strokeOpacity="0.18" strokeWidth="1" />
             <rect
               x="72"
               y="72"
@@ -129,14 +98,14 @@ export function GeometricBackdrop() {
         </motion.div>
       </motion.div>
 
-      {/* Mid-Left Bidirectional Rotating Diamond & Spark (mouse parallax wrapper + scroll rotation) */}
+      {/* Mid-Left Bidirectional Rotating Diamond */}
       <motion.div
-        style={{ x: leftParallaxX, y: leftParallaxY }}
+        style={enableMouseParallax ? { x: leftParallaxX, y: leftParallaxY } : undefined}
         className="absolute top-[36%] -left-36 sm:-left-24"
       >
         <motion.div
           style={{ rotate: leftDiamondRotate, y: leftDiamondY }}
-          className="flex h-[380px] w-[380px] items-center justify-center rounded-[52px] border border-[#B7C9ED]/40 bg-[#F1F4FC]/55 sm:h-[440px] sm:w-[440px]"
+          className="flex h-[340px] w-[340px] items-center justify-center rounded-[52px] border border-[#B7C9ED]/40 bg-[#F1F4FC]/50 will-change-transform sm:h-[420px] sm:w-[420px]"
         >
           <svg viewBox="0 0 200 200" className="h-[72%] w-[72%] text-[#1C3265]" fill="none">
             <circle
@@ -154,26 +123,19 @@ export function GeometricBackdrop() {
               strokeOpacity="0.2"
               strokeWidth="1.2"
             />
-            <circle
-              cx="100"
-              cy="100"
-              r="26"
-              stroke="#6385CB"
-              strokeOpacity="0.28"
-              strokeWidth="1.2"
-            />
+            <circle cx="100" cy="100" r="26" stroke="#6385CB" strokeOpacity="0.28" strokeWidth="1.2" />
           </svg>
         </motion.div>
       </motion.div>
 
-      {/* Lower-Right Scroll-Linked & Mouse Parallax Orbital Ring */}
+      {/* Lower-Right Orbital Ring (Desktop/Tablet) */}
       <motion.div
-        style={{ x: bottomParallaxX, y: bottomParallaxY }}
+        style={enableMouseParallax ? { x: bottomParallaxX, y: bottomParallaxY } : undefined}
         className="absolute -bottom-28 right-[4%] hidden sm:block"
       >
         <motion.div
-          style={{ rotate: bottomRingRotate, x: bottomRingX }}
-          className="flex h-[340px] w-[340px] items-center justify-center rounded-full border border-[#B7C9ED]/35 bg-[#F1F4FC]/35"
+          style={{ rotate: bottomRingRotate }}
+          className="flex h-[320px] w-[320px] items-center justify-center rounded-full border border-[#B7C9ED]/35 bg-[#F1F4FC]/35 will-change-transform"
         >
           <svg viewBox="0 0 180 180" className="h-[80%] w-[80%] text-[#3156A5]" fill="none">
             <circle
@@ -185,44 +147,13 @@ export function GeometricBackdrop() {
               strokeWidth="1.2"
               strokeDasharray="10 8"
             />
-            <circle
-              cx="90"
-              cy="90"
-              r="46"
-              stroke="#1C3265"
-              strokeOpacity="0.18"
-              strokeWidth="1"
-            />
-            <line
-              x1="90"
-              y1="10"
-              x2="90"
-              y2="170"
-              stroke="#B7C9ED"
-              strokeOpacity="0.45"
-              strokeWidth="1"
-            />
-            <line
-              x1="10"
-              y1="90"
-              x2="170"
-              y2="90"
-              stroke="#B7C9ED"
-              strokeOpacity="0.45"
-              strokeWidth="1"
-            />
+            <circle cx="90" cy="90" r="46" stroke="#1C3265" strokeOpacity="0.18" strokeWidth="1" />
           </svg>
         </motion.div>
       </motion.div>
 
-      {/* Ultra-low-opacity dot matrix + diagonal technical lines shifting subtly with mouse & scroll */}
-      <motion.div style={{ x: gridParallaxX, y: gridParallaxY }} className="absolute -inset-6">
-        <motion.div style={{ y: gridScrollY }} className="trt-grid-surface absolute inset-0 opacity-55" />
-      </motion.div>
-      <div className="trt-diagonal-lines absolute inset-0 opacity-55" />
-
-      {/* Subtle paper-grain texture */}
-      <div className="trt-paper-grain absolute inset-0" />
+      <div className="trt-grid-surface absolute inset-0 opacity-45" />
+      <div className="trt-diagonal-lines absolute inset-0 opacity-45" />
     </div>
   );
 }

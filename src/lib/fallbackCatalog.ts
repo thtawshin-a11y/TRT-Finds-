@@ -369,28 +369,37 @@ export function staticCreateProduct(token: string, input: ProductFormInput): Pro
   if (!staticVerifyToken(token)) throw new Error('Admin session expired.');
   const state = readStaticState();
   const now = Date.now();
-  const baseSlug = slugifyText(input.slug || input.title);
+  const numericPrice = Math.max(0, Number(input.price) || 0);
+  const cleanTitle =
+    input.title && input.title.trim()
+      ? input.title.trim()
+      : `Curated Find ৳${Math.round(numericPrice)}`;
+  const baseSlug = slugifyText(input.slug || cleanTitle);
   const slugExists = state.products.some((p) => p.slug === baseSlug);
   const finalSlug = slugExists ? `${baseSlug}-${String(now).slice(-4)}` : baseSlug;
 
   const product: Product = {
     id: `prod_${now}_${Math.random().toString(36).slice(2, 6)}`,
-    title: input.title,
+    title: cleanTitle,
     slug: finalSlug,
-    price: Number(input.price) || 0,
+    price: numericPrice,
     originalPrice: input.originalPrice ?? null,
     discountPercent: input.discountPercent ?? null,
     description: input.description ?? null,
     categoryId: input.categoryId ?? null,
     categoryName: input.categoryName ?? null,
-    images: Array.isArray(input.images) ? input.images : [],
+    images: Array.isArray(input.images) ? input.images.slice(0, 24) : [],
     video: input.video ?? null,
     colors: input.colors ?? null,
+    colorVariants:
+      Array.isArray(input.colorVariants) && input.colorVariants.length > 0
+        ? input.colorVariants
+        : null,
     sizes: input.sizes ?? null,
     stock: input.stock ?? null,
     rating: input.rating ?? null,
     specifications: input.specifications ?? null,
-    affiliateUrl: input.affiliateUrl,
+    affiliateUrl: input.affiliateUrl && input.affiliateUrl.trim() ? input.affiliateUrl.trim() : null,
     isPinned: Boolean(input.isPinned),
     isPublished: input.isPublished !== false,
     createdAt: now,
@@ -413,6 +422,12 @@ export function staticUpdateProduct(
   const updated: Product = {
     ...state.products[idx],
     ...input,
+    affiliateUrl:
+      input.affiliateUrl !== undefined
+        ? input.affiliateUrl && input.affiliateUrl.trim()
+          ? input.affiliateUrl.trim()
+          : null
+        : state.products[idx].affiliateUrl,
     updatedAt: Date.now(),
   };
   state.products[idx] = updated;

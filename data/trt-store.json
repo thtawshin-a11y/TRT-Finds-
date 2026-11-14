@@ -1,0 +1,257 @@
+{
+  "adminSecretKey": "eff21a498924d35f22e6532bf962bab7e9030c0eaae78b97f394c222e5659643",
+  "passwordSalt": "df9d4cf578994b714c7b149701c089c9",
+  "passwordHash": "efa703018f776c1116e645cf58dc8bdae3d225c27f36094d147b2f46f410a16f9ef2ed01bcb76702b2e442a5ed238e4c155deb6a5dd98c1505b7eeb7d8f02699",
+  "categories": [
+    {
+      "id": "tech-gadgets",
+      "name": "Tech & Gadgets",
+      "slug": "tech-gadgets",
+      "description": "Precision hardware, wireless keyboards, and intelligent everyday carry tech.",
+      "sortOrder": 1,
+      "createdAt": 1794657253229,
+      "updatedAt": 1794657253229
+    },
+    {
+      "id": "home-living",
+      "name": "Home & Living",
+      "slug": "home-living",
+      "description": "Minimalist spatial pieces, architectural lighting, and refined desk upgrades.",
+      "sortOrder": 2,
+      "createdAt": 1794657253229,
+      "updatedAt": 1794657253229
+    },
+    {
+      "id": "fashion",
+      "name": "Fashion",
+      "slug": "fashion",
+      "description": "Structured silhouettes, clean accessories, and timeless wardrobe staples.",
+      "sortOrder": 3,
+      "createdAt": 1794657253229,
+      "updatedAt": 1794657253229
+    },
+    {
+      "id": "daily-essentials",
+      "name": "Daily Essentials",
+      "slug": "daily-essentials",
+      "description": "Thoughtful tools and insulated drinkware built for effortless daily routines.",
+      "sortOrder": 4,
+      "createdAt": 1794657253229,
+      "updatedAt": 1794657253229
+    }
+  ],
+  "products": [
+    {
+      "id": "demo_kibo_keyboard",
+      "title": "Kibo 75% Wireless Mechanical Keyboard",
+      "slug": "kibo-75-wireless-mechanical-keyboard",
+      "price": 5800,
+      "originalPrice": 6500,
+      "discountPercent": 11,
+      "description": "CNC-machined aluminum frame paired with tri-mode Bluetooth/2.4GHz connectivity, hot-swappable tactile switches, and double-shot PBT keycaps in crisp white and deep cobalt.",
+      "categoryId": "tech-gadgets",
+      "categoryName": "Tech & Gadgets",
+      "images": [
+        "/assets/demo/mechanical-keyboard.jpg"
+      ],
+      "video": null,
+      "colors": [
+        "Arctic White & Cobalt",
+        "Midnight Slate"
+      ],
+      "sizes": [
+        "75% Compact"
+      ],
+      "stock": 18,
+      "rating": 4.9,
+      "specifications": [
+        {
+          "label": "Chassis",
+          "value": "CNC Anodized Aluminum"
+        },
+        {
+          "label": "Connectivity",
+          "value": "USB-C / Bluetooth 5.1 / 2.4GHz"
+        },
+        {
+          "label": "Battery",
+          "value": "4000 mAh Rechargeable"
+        }
+      ],
+      "affiliateUrl": "https://www.amazon.com/s?k=wireless+mechanical+keyboard",
+      "isPinned": true,
+      "isPublished": true,
+      "createdAt": 1794657213229,
+      "updatedAt": 1794657213229
+    },
+    {
+      "id": "demo_lumen_lamp",
+      "title": "Lumen Arc Architectural LED Desk Lamp",
+      "slug": "lumen-arc-architectural-led-desk-lamp",
+      "price": 3450,
+      "originalPrice": 4200,
+      "discountPercent": 18,
+      "description": "Counter-balanced brushed aluminum arm with stepless dimming, flicker-free CRI 95+ illumination, and weighted midnight navy base.",
+      "categoryId": "home-living",
+      "categoryName": "Home & Living",
+      "images": [
+        "/assets/demo/desk-lamp.jpg"
+      ],
+      "video": null,
+      "colors": [
+        "Midnight Navy & Brushed Steel"
+      ],
+      "sizes": null,
+      "stock": 24,
+      "rating": 4.8,
+      "specifications": [
+        {
+          "label": "Color Rendering",
+          "value": "CRI 95+ Natural Spectrum"
+        },
+        {
+          "label": "Control",
+          "value": "Tactile Toggle & Dimmer"
+        }
+      ],
+      "affiliateUrl": "https://www.amazon.com/s?k=minimalist+architectural+led+desk+lamp",
+      "isPinned": true,
+      "isPublished": true,
+      "createdAt": 1794657223229,
+      "updatedAt": 1794657223229
+    },
+    {
+      "id": "demo_atelier_tote",
+      "title": "Atelier Structured Leather Everyday Tote",
+      "slug": "atelier-structured-leather-everyday-tote",
+      "price": 2950,
+      "originalPrice": null,
+      "discountPercent": null,
+      "description": "Clean architectural silhouette crafted in full-grain pebbled vegan leather with a padded 14-inch laptop sleeve and detachable crossbody strap.",
+      "categoryId": "fashion",
+      "categoryName": "Fashion",
+      "images": [
+        "/assets/demo/structured-tote.jpg"
+      ],
+      "video": null,
+      "colors": [
+        "Deep Cobalt",
+        "Midnight Navy"
+      ],
+      "sizes": [
+        "Standard (14\" Laptop)"
+      ],
+      "stock": 12,
+      "rating": 4.7,
+      "specifications": [
+        {
+          "label": "Capacity",
+          "value": "Fits up to 14-inch laptop"
+        },
+        {
+          "label": "Strap",
+          "value": "Dual handle + detachable shoulder strap"
+        }
+      ],
+      "affiliateUrl": "https://www.amazon.com/s?k=structured+leather+tote+bag",
+      "isPinned": true,
+      "isPublished": true,
+      "createdAt": 1794657233229,
+      "updatedAt": 1794657233229
+    },
+    {
+      "id": "demo_nomad_flask",
+      "title": "Nomad Matte Cobalt Insulated Flask",
+      "slug": "nomad-matte-cobalt-insulated-flask",
+      "price": 1450,
+      "originalPrice": 1750,
+      "discountPercent": 17,
+      "description": "Double-wall vacuum-insulated 18/8 stainless steel flask that keeps drinks cold for 24 hours or hot for 12 hours, finished in matte deep cobalt.",
+      "categoryId": "daily-essentials",
+      "categoryName": "Daily Essentials",
+      "images": [
+        "/assets/demo/insulated-flask.jpg"
+      ],
+      "video": null,
+      "colors": [
+        "Deep Cobalt",
+        "Arctic White"
+      ],
+      "sizes": [
+        "750ml"
+      ],
+      "stock": 40,
+      "rating": 4.9,
+      "specifications": [
+        {
+          "label": "Material",
+          "value": "18/8 Food-Grade Stainless Steel"
+        },
+        {
+          "label": "Insulation",
+          "value": "24h Cold / 12h Hot"
+        }
+      ],
+      "affiliateUrl": "https://www.amazon.com/s?k=insulated+stainless+steel+water+bottle",
+      "isPinned": false,
+      "isPublished": true,
+      "createdAt": 1794657243229,
+      "updatedAt": 1794657243229
+    }
+  ],
+  "analytics": [
+    {
+      "id": "evt_mwgdbjzj_z42mk",
+      "type": "site_visit",
+      "productId": null,
+      "productTitle": null,
+      "categoryId": null,
+      "categoryName": null,
+      "path": "/shop",
+      "dateKey": "2026-11-14",
+      "monthKey": "2026-11",
+      "createdAt": 1794658477807
+    },
+    {
+      "id": "evt_mwgcxh8g_38ecj",
+      "type": "site_visit",
+      "productId": null,
+      "productTitle": null,
+      "categoryId": null,
+      "categoryName": null,
+      "path": "/",
+      "dateKey": "2026-11-14",
+      "monthKey": "2026-11",
+      "createdAt": 1794657821056
+    },
+    {
+      "id": "evt_mwgclk2s_0p1qd",
+      "type": "site_visit",
+      "productId": null,
+      "productTitle": null,
+      "categoryId": null,
+      "categoryName": null,
+      "path": "/",
+      "dateKey": "2026-11-14",
+      "monthKey": "2026-11",
+      "createdAt": 1794657264868
+    }
+  ],
+  "settings": {
+    "brandPhilosophy": "Thought • Realize • Trend",
+    "heroHeadline": "Discover smart finds, curated just for you.",
+    "heroSubtext": "Explore thoughtfully selected products, everyday essentials, and smarter deals.",
+    "heroPrimaryCta": "Explore Products",
+    "heroSecondaryCta": "Discover Categories",
+    "orderButtonLabel": "Order Now",
+    "aboutTitle": "Simplicity, clarity, and products worth owning.",
+    "aboutBody": "TRT FINDS (@trtfinds) curates thoughtful everyday tools, refined home pieces, smart tech accessories, and timeless fashion—presented with clear pricing in Bangladeshi Taka (৳) and direct outbound links to verified partner stores.",
+    "affiliateDisclosure": "When you click Order Now on TRT FINDS, you are directed safely to the official merchant or partner store. Some outbound links are affiliate links, meaning TRT FINDS may earn a referral commission at no additional cost to you.",
+    "contactEmail": "hello@trtfinds.com",
+    "contactPhone": "+880 1700-000000",
+    "contactAddress": "Dhaka, Bangladesh",
+    "contactHours": "Saturday – Thursday, 10:00 AM – 8:00 PM",
+    "socialHandle": "@trtfinds",
+    "enableReloadAnimation": true
+  }
+}

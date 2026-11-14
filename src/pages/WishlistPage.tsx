@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
 import { ArrowRight, ArrowUpRight, Trash2 } from 'lucide-react';
-import { ScrollReveal } from '../components/ScrollEffects';
+import { ScrollReveal, ScrollScrubCard } from '../components/ScrollEffects';
 import { useStore } from '../context/StoreContext';
 import { trackAnalyticsEvent } from '../lib/apiClient';
 import { formatTaka, isSafeHttpUrl } from '../lib/format';
@@ -53,24 +52,21 @@ export function WishlistPage() {
       ) : (
         <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {wishlist.map((item, idx) => (
-            <motion.article
-              key={item.productId}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.08 }}
-              transition={{ duration: 0.5, delay: Math.min((idx % 3) * 0.07, 0.21), ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col overflow-hidden rounded-3xl border border-[#B7C9ED]/65 bg-white"
-            >
-              <Link to={`/product/${item.slug}`} className="aspect-[4/3] w-full bg-[#F1F4FC]">
+            <ScrollScrubCard key={item.productId} index={idx}>
+              <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-[#B7C9ED]/65 bg-white">
+              <Link
+                to={`/product/${item.slug}`}
+                className="flex min-h-[200px] w-full items-center justify-center bg-[#F1F4FC]/60 p-3"
+              >
                 {item.image ? (
                   <img
                     src={item.image}
                     alt={item.title}
                     referrerPolicy="no-referrer"
-                    className="h-full w-full object-cover"
+                    className="max-h-[320px] w-auto max-w-full rounded-2xl object-contain"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-xs text-[#6385CB]">
+                  <div className="flex h-44 w-full items-center justify-center text-xs text-[#6385CB]">
                     {item.title}
                   </div>
                 )}
@@ -88,7 +84,7 @@ export function WishlistPage() {
                 <div className="mt-4 flex items-center gap-2 pt-3">
                   {isSafeHttpUrl(item.affiliateUrl) ? (
                     <a
-                      href={item.affiliateUrl}
+                      href={item.affiliateUrl || '#'}
                       target="_blank"
                       rel="noopener noreferrer nofollow sponsored"
                       onClick={() =>
@@ -121,7 +117,8 @@ export function WishlistPage() {
                   </button>
                 </div>
               </div>
-            </motion.article>
+              </article>
+            </ScrollScrubCard>
           ))}
         </div>
       )}

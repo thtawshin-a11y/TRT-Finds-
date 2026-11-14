@@ -4,7 +4,12 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowRight, ArrowUpRight, Sparkles } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
 import { ProductEmptyState, ProductGridSkeleton } from '../components/ProductEmptyState';
-import { ScrollParallaxSection, ScrollReveal } from '../components/ScrollEffects';
+import {
+  ScrollEditorialTicker,
+  ScrollParallaxSection,
+  ScrollReveal,
+  ScrollScrubCard,
+} from '../components/ScrollEffects';
 import { SlidingTabs, type TabOption } from '../components/SlidingTabs';
 import { useStore } from '../context/StoreContext';
 import { formatTaka } from '../lib/format';
@@ -64,10 +69,6 @@ export function HomePage() {
           {/* Primary Hero Bento Tile */}
           <motion.div
             style={{ y: heroLeftY }}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.08 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[#B7C9ED]/70 bg-white p-7 sm:p-10 lg:col-span-7 lg:p-12"
           >
             <div>
@@ -80,7 +81,7 @@ export function HomePage() {
                 {settings.heroHeadline}
               </h1>
 
-              <p className="mt-5 max-w-lg text-base leading-relaxed text-[#1C3265]/80 sm:text-lg">
+              <p className="mt-5 max-w-lg text-base font-medium leading-relaxed text-[#1C3265] sm:text-lg">
                 {settings.heroSubtext}
               </p>
             </div>
@@ -105,10 +106,6 @@ export function HomePage() {
           {/* Right Modular Bento Grid: Spotlight Find + Category Tiles */}
           <motion.div
             style={{ y: heroRightY }}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.08 }}
-            transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
             className="grid gap-4 sm:grid-cols-2 lg:col-span-5"
           >
             {spotlightProduct ? (
@@ -128,16 +125,16 @@ export function HomePage() {
                       {formatTaka(spotlightProduct.price)}
                     </p>
                   </div>
-                  <div className="h-20 w-24 shrink-0 overflow-hidden rounded-2xl border border-[#B7C9ED]/60 bg-white">
+                  <div className="flex h-22 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#B7C9ED]/60 bg-white p-1.5">
                     {spotlightProduct.images?.[0] ? (
                       <img
                         src={spotlightProduct.images[0]}
                         alt={spotlightProduct.title}
                         referrerPolicy="no-referrer"
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        className="max-h-full max-w-full rounded-xl object-contain transition-transform duration-300 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-[#F1F4FC]">
+                      <div className="flex h-full w-full items-center justify-center rounded-xl bg-[#F1F4FC]">
                         <div className="h-6 w-6 rotate-45 rounded-lg border border-[#6385CB]/45 bg-white" />
                       </div>
                     )}
@@ -158,23 +155,16 @@ export function HomePage() {
                 (p) => p.categoryId === cat.id || p.categoryName === cat.name
               ).length;
               return (
-                <motion.div
-                  key={cat.id}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.08 }}
-                  transition={{ duration: 0.48, delay: 0.1 + idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex"
-                >
+                <ScrollScrubCard key={cat.id} index={idx} className="flex">
                   <Link
                     to={`/shop?category=${encodeURIComponent(cat.id)}`}
                     className="group flex w-full flex-col justify-between rounded-3xl border border-[#B7C9ED]/65 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3156A5] hover:bg-[#F1F4FC]/50"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-accent tabular-nums text-[11px] font-semibold text-[#6385CB]">
+                      <span className="font-accent tabular-nums text-[11px] font-bold text-[#1C3265]">
                         0{idx + 1}
                       </span>
-                      <span className="rounded-full bg-[#F1F4FC] px-2.5 py-0.5 font-accent tabular-nums text-[11px] font-semibold text-[#1C3265]">
+                      <span className="rounded-full bg-[#F1F4FC] px-2.5 py-0.5 font-accent tabular-nums text-[11px] font-bold text-[#101A35]">
                         {count}
                       </span>
                     </div>
@@ -182,15 +172,27 @@ export function HomePage() {
                       <span className="font-display text-sm font-bold text-[#101A35] group-hover:text-[#1C3265]">
                         {cat.name}
                       </span>
-                      <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#6385CB] transition-transform group-hover:translate-x-0.5 group-hover:text-[#101A35]" />
+                      <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#1C3265] transition-transform group-hover:translate-x-0.5 group-hover:text-[#101A35]" />
                     </div>
                   </Link>
-                </motion.div>
+                </ScrollScrubCard>
               );
             })}
           </motion.div>
         </div>
       </section>
+
+      {/* Scroll-Scrubbed Dual-Lane Editorial Ticker with TRT Logo, Brand Name & Slogans */}
+      <ScrollEditorialTicker
+        className="-mx-4 my-2 sm:-mx-6 lg:-mx-8"
+        items={[
+          settings.brandPhilosophy || 'Thought • Realize • Trend',
+          'Smart Everyday Finds',
+          'Transparent ৳ Pricing',
+          'Minimalist Design Picks',
+          'Verified Partner Stores',
+        ]}
+      />
 
       {/* Scroll-Based Section 1: Pinned / Featured Finds */}
       {pinnedProducts.length > 0 && (
@@ -290,60 +292,48 @@ export function HomePage() {
       {/* Scroll-Based Section 3: Brand Philosophy Bento Strip */}
       <ScrollParallaxSection offsetY={28} className="py-10 sm:py-14">
         <div className="grid gap-5 md:grid-cols-3">
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.55, delay: 0, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-3xl border border-[#B7C9ED]/55 bg-[#F1F4FC]/60 p-7"
-          >
-            <span className="font-accent text-xs font-semibold tracking-[0.14em] text-[#3156A5] uppercase">
-              01 · Thought
-            </span>
-            <h3 className="mt-2 font-display text-lg font-bold text-[#101A35]">
-              Intentional Selection
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-[#1C3265]/80">
-              No noisy marketplace clutter—only considered objects evaluated for daily utility and lasting design.
-            </p>
-          </motion.div>
+          <ScrollScrubCard index={0}>
+            <div className="h-full rounded-3xl border border-[#B7C9ED]/70 bg-[#F1F4FC]/75 p-7">
+              <span className="font-accent text-xs font-bold tracking-[0.14em] text-[#1C3265] uppercase">
+                01 · Thought
+              </span>
+              <h3 className="mt-2 font-display text-lg font-bold text-[#101A35]">
+                Intentional Selection
+              </h3>
+              <p className="mt-2 text-sm font-medium leading-relaxed text-[#1C3265]">
+                No noisy marketplace clutter—only considered objects evaluated for daily utility and lasting design.
+              </p>
+            </div>
+          </ScrollScrubCard>
 
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-3xl border border-[#B7C9ED]/55 bg-white p-7"
-          >
-            <span className="font-accent text-xs font-semibold tracking-[0.14em] text-[#3156A5] uppercase">
-              02 · Realize
-            </span>
-            <h3 className="mt-2 font-display text-lg font-bold text-[#101A35]">
-              Clear Transparency
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-[#1C3265]/80">
-              Honest ৳ pricing, crisp specifications, and direct verified outbound links to trusted partner stores.
-            </p>
-          </motion.div>
+          <ScrollScrubCard index={1}>
+            <div className="h-full rounded-3xl border border-[#B7C9ED]/70 bg-white p-7">
+              <span className="font-accent text-xs font-bold tracking-[0.14em] text-[#1C3265] uppercase">
+                02 · Realize
+              </span>
+              <h3 className="mt-2 font-display text-lg font-bold text-[#101A35]">
+                Clear Transparency
+              </h3>
+              <p className="mt-2 text-sm font-medium leading-relaxed text-[#1C3265]">
+                Honest ৳ pricing, crisp specifications, and direct verified outbound links to trusted partner stores.
+              </p>
+            </div>
+          </ScrollScrubCard>
 
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.55, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-3xl border border-[#101A35] bg-[#101A35] p-7 text-white"
-          >
-            <span className="inline-flex items-center gap-1.5 font-accent text-xs font-semibold tracking-[0.14em] text-[#B7C9ED] uppercase">
-              <Sparkles className="h-3.5 w-3.5" />
-              03 · Trend
-            </span>
-            <h3 className="mt-2 font-display text-lg font-bold text-white">
-              Modern Everyday Utility
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-[#B7C9ED]/90">
-              Designed for modern living across Tech & Gadgets, Home & Living, Fashion, and Daily Essentials.
-            </p>
-          </motion.div>
+          <ScrollScrubCard index={2}>
+            <div className="h-full rounded-3xl border border-[#101A35] bg-[#101A35] p-7 text-white">
+              <span className="inline-flex items-center gap-1.5 font-accent text-xs font-semibold tracking-[0.14em] text-[#B7C9ED] uppercase">
+                <Sparkles className="h-3.5 w-3.5" />
+                03 · Trend
+              </span>
+              <h3 className="mt-2 font-display text-lg font-bold text-white">
+                Modern Everyday Utility
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#B7C9ED]/90">
+                Designed for modern living across Tech & Gadgets, Home & Living, Fashion, and Daily Essentials.
+              </p>
+            </div>
+          </ScrollScrubCard>
         </div>
       </ScrollParallaxSection>
     </div>
